@@ -48,13 +48,16 @@ fn get_candidates(election: &str) -> Vec<String> {
     }
 }
 
-
+#[tauri::command]
+fn set_profile(first_name: &str, last_name: &str, address: &str, dob: &str, dri_lic: &str) -> bool {
+    true
+}
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_shell::init())
-        .invoke_handler(tauri::generate_handler![generate_identity, request_ballot, submit_ballot, get_elections, get_candidates])
+        .invoke_handler(tauri::generate_handler![generate_identity, request_ballot, submit_ballot, get_elections, get_candidates, set_profile])
         .run(tauri::generate_context!())
         .expect("error whilrunning tauri application");
 }
