@@ -1,12 +1,20 @@
 import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
-import "./App.css";
+import "@mantine/core/styles.css";
+import {
+    Button,
+    Container,
+    MantineProvider,
+    Space,
+    Title,
+} from "@mantine/core";
+import { Select } from "@mantine/core";
 
 function App() {
-    const [name, setName] = useState("");
     const [election, setElection] = useState("");
     const [elections, setElections] = useState([]);
     const [candidates, setCandidates] = useState([]);
+    const [candidate, setCandidate] = useState("");
     const [ballot, setBallot] = useState(false);
 
     const generateIdentity = async () => {
@@ -32,7 +40,7 @@ function App() {
     };
 
     const submitBallot = async () => {
-        if (!name) {
+        if (!candidate) {
             console.error("Name not set");
             return;
         }
@@ -44,11 +52,7 @@ function App() {
             console.error("Election not set");
             return;
         }
-        console.log(await invoke("submit_ballot", { election, name }));
-    };
-
-    const handleChangeElection = () => {
-        setElection(election);
+        console.log(await invoke("submit_ballot", { election, candidate }));
     };
 
     useEffect(() => {
@@ -60,30 +64,39 @@ function App() {
     }, [election]);
 
     return (
-        <main className="container">
-            <h1>Election Interface</h1>
-            <br />
-            <Button onClick={getElections}>Get Elections</Button>
-            <br />
-            <Form.Select onChange={handleChangeElection} className="mt-3">
-                <option>Select Election</option>
-                {elections.map((election) => (
-                    <option key={election}>{election}</option>
-                ))}
-            </Form.Select>
-            <br />
-            <Button onClick={requestBallot}>Request Ballot</Button>
-            <br />
-            {candidates}
-            <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Enter your name"
-            />
-            <br />
-            <Button onClick={submitBallot}>Vote</Button>
-        </main>
+        <MantineProvider>
+            <Container size="sm">
+                <Title order={1} mb="xl">
+                    Election Interface
+                </Title>
+                <Space h="md" />
+                <Button fullWidth onClick={getElections}>
+                    Get Elections
+                </Button>
+                <Space h="md" />
+                <Select
+                    label="Select an election to vote in"
+                    data={elections}
+                    onChange={(value) => setElection(value ?? "")}
+                    placeholder="Choose election"
+                />
+                <Space h="md" />
+                <Select
+                    label="Select a candidate to vote for"
+                    data={candidates}
+                    onChange={(value) => setCandidate(value ?? "")}
+                    placeholder="Choose candidate"
+                />
+                <Space h="md" />
+                <Button fullWidth onClick={requestBallot}>
+                    Request Ballot
+                </Button>
+                <Space h="md" />
+                <Button fullWidth onClick={submitBallot}>
+                    Vote
+                </Button>
+            </Container>
+        </MantineProvider>
     );
 }
 

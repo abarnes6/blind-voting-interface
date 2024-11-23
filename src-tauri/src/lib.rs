@@ -10,20 +10,20 @@ fn request_ballot() -> bool {
 }
 
 #[tauri::command]
-fn submit_ballot(election: &str, name: &str) -> bool {
+fn submit_ballot(election: &str, candidate: &str) -> bool {
     if election == "election1" {
-        if name == "candidate1" {
+        if candidate == "candidate1" {
             return true
         }
-        else if name == "candidate2" {
+        else if candidate == "candidate2" {
             return true
         }
     }
     else if election == "election2" {
-        if name == "candidate3" {
+        if candidate == "candidate3" {
             return true
         }
-        else if name == "candidate4" {
+        else if candidate == "candidate4" {
             return true
         }
     }
