@@ -22,4 +22,9 @@ tauri = { version = "2", features = [] }
 tauri-plugin-shell = "2"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
-
+user = { path = "lib/blind-voting/user"}
+blind-rsa-signatures = "0.15.1"
+rand = "0.8"
+reqwest = { version = "0.11", features = ["json"] }
+uuid = { version = "1.1", features = ["serde", "v4"] }
+sha2 = "0.10"

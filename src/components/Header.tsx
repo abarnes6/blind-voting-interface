@@ -14,6 +14,9 @@ const Header: React.FC = () => {
                 <Button color="inherit" component="a" href="/">
                     Vote
                 </Button>
+                <Button color="inherit" component="a" href="/ballot">
+                    Ballot
+                </Button>
             </Toolbar>
         </AppBar>
     );

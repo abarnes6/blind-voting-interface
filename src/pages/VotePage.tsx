@@ -15,14 +15,6 @@ export const VotePage = () => {
     const [candidates, setCandidates] = useState([]);
     const [candidate, setCandidate] = useState("");
 
-    const generateIdentity = async () => {
-        console.log(await invoke("generate_identity"));
-    };
-
-    const getElections = async () => {
-        setElections(await invoke("get_elections"));
-    };
-
     const getCandidates = async () => {
         if (!election) {
             console.error("Election not set");
@@ -44,7 +36,10 @@ export const VotePage = () => {
     };
 
     useEffect(() => {
-        generateIdentity();
+        const fetchData = async () => {
+            setElections(await invoke("get_elections"));
+        };
+        fetchData();
     }, []);
 
     useEffect(() => {
@@ -56,9 +51,6 @@ export const VotePage = () => {
                 Election Interface
             </Typography>
             <Stack spacing={2}>
-                <Button fullWidth onClick={getElections} variant="contained">
-                    Get Elections
-                </Button>
                 <Select
                     label="Select an election to vote in"
                     value={election}

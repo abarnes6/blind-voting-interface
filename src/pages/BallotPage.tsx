@@ -22,7 +22,11 @@ export const BallotPage: React.FC = () => {
     };
     return (
         <>
-            <Button onClick={requestBallot}>Request Ballot</Button>
+            {hasBallot ? (
+                <p>You already have a ballot: {ballotName}</p>
+            ) : (
+                <Button onClick={requestBallot}>Request Ballot</Button>
+            )}
         </>
     );
 };
