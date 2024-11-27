@@ -1,3 +1,0 @@
-[submodule "src-tauri/lib/blind-voting"]
-	path = src-tauri/lib/blind-voting
-	url = https://github.com/PastaPastaPasta/blind-voting.git

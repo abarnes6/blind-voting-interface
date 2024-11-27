@@ -65,8 +65,6 @@ fn submit_ballot(election: &str, candidate: &str) -> bool {
     crypto::submit_ballot(election, candidate, keypair, ballot.signature.unwrap());
 
     return true;
-
-
 }
 
 #[tauri::command]
