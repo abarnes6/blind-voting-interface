@@ -1,31 +1,51 @@
 import { Button } from "@mui/material";
 import { invoke } from "@tauri-apps/api/core";
 import { useEffect, useState } from "react";
+import { Ballot, Profile } from "../shared/models";
 
 export const BallotPage: React.FC = () => {
-    const [hasBallot, setHasBallot] = useState(false);
-    const [ballotName, setBallotName] = useState("");
+    const [ballot, setBallot] = useState<Ballot>();
+
+    const [profile, setProfile] = useState<Profile | undefined>();
 
     useEffect(() => {
-        const checkBallot = async () => {
-            const exists = await invoke("ballot_exists");
-            if (exists) {
-                setHasBallot(true);
-                const name: string = await invoke("get_ballot_name");
-                setBallotName(name);
+        const loadData = async () => {
+            setProfile(await invoke("get_profile"));
+            const ballot: Ballot = await invoke("get_ballot");
+            if (ballot.id === "None") {
+                return;
             }
+            setBallot(ballot);
         };
-        checkBallot();
+        loadData();
     }, []);
+
     const requestBallot = async () => {
-        await invoke("request_ballot", { name: "name" });
+        if (!profile) {
+            console.error("Profile not set");
+            return;
+        }
+        const ballot: Ballot = await invoke("request_ballot", {
+            id: profile.first_name + " " + profile.last_name,
+        });
+        if (ballot.id === "None") {
+            return;
+        }
+        setBallot(ballot);
     };
+
     return (
         <>
-            {hasBallot ? (
-                <p>You already have a ballot: {ballotName}</p>
+            {ballot ? (
+                <div>
+                    <h2>Your Ballot</h2>
+                    <p>Ballot ID: {ballot.id}</p>
+                    <p>Ballot Details: {ballot.signature}</p>
+                </div>
             ) : (
-                <Button onClick={requestBallot}>Request Ballot</Button>
+                <div style={{ display: "flex", justifyContent: "center" }}>
+                    <Button onClick={requestBallot}>Request Ballot</Button>
+                </div>
             )}
         </>
     );

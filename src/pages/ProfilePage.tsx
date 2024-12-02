@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { TextField, Button, Container, Typography, Box } from "@mui/material";
+import { invoke } from "@tauri-apps/api/core";
+import { Profile } from "../shared/models";
 
 export const ProfilePage: React.FC = () => {
     const [name, setName] = useState("");
@@ -7,11 +9,32 @@ export const ProfilePage: React.FC = () => {
     const [dob, setDob] = useState("");
     const [driversLicense, setDriversLicense] = useState("");
 
-    const handleSubmit = (event: React.FormEvent) => {
+    const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
-        // Handle form submission logic here
-        console.log({ name, address, dob, driversLicense });
+        const prof: Profile = {
+            first_name: name.split(" ")[0],
+            last_name: name.split(" ")[1] || "",
+            address,
+            dob,
+            driv_lic: driversLicense,
+        };
+        console.log(
+            await invoke("create_profile", {
+                profile: prof,
+            })
+        );
     };
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const prof: Profile = await invoke("get_profile");
+            setName(`${prof.first_name} ${prof.last_name}`);
+            setAddress(prof.address);
+            setDob(prof.dob);
+            setDriversLicense(prof.driv_lic);
+        };
+        fetchData();
+    }, []);
 
     return (
         <Container>
